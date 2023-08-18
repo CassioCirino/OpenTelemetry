@@ -2,16 +2,13 @@ import time
 import random
 
 from opentelemetry import trace
-
-from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
-from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
-
-from opentelemetry.sdk.metrics.export import AggregationTemporality, PeriodicExportingMetricReader
-from opentelemetry.sdk.metrics import MeterProvider, Counter
-
+from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
-
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
+from opentelemetry.sdk.metrics.export import AggregationTemporality, PeriodicExportingMetricReader
+from opentelemetry.sdk.metrics import MeterProvider, Counter
 from opentelemetry.metrics import set_meter_provider, get_meter_provider
 
 
@@ -20,7 +17,8 @@ DT_API_URL = 'sua url de ambiente aqui'
 DT_API_TOKEN = 'seu api token aqui' # O escopo do token deve conter metrics.ingest openTelemetryTrace.ingest, caso a solucao pretendida envolva log o escopo logs.ingest deve ser acrescentado.
 
 # Criação do provedor de traces
-tracer_provider = TracerProvider()
+resource = Resource.create({"service.name": "centro-medico"})
+tracer_provider = TracerProvider(resource=resource)
 
 # Configuração do provedor global de traces
 trace.set_tracer_provider(tracer_provider)
